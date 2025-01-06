@@ -4,9 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using wpfGasStations.Model;
 
-namespace wpfGasStations.Viewmodel
+namespace wpfGasStations
 {
     public interface IViewModelBuilder
     {

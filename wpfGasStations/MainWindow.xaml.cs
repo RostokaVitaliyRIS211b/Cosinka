@@ -8,20 +8,18 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using wpfGasStations.Viewmodel;
 
 namespace wpfGasStations
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+ 
     public partial class MainWindow : Window
     {
+        public ApplicationViewModel Myapp { get; set; }
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new ApplicationViewModel();
-            
+            Myapp = new();
+            DataContext = Myapp;
         }
 
         private void cardDeck_Click(object sender, RoutedEventArgs e)
