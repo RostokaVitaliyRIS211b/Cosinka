@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using Cosinka.Viewmodel;
+using Microsoft.Extensions.DependencyInjection;
+using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -15,11 +18,21 @@ namespace wpfGasStations
     public partial class MainWindow : Window
     {
         public ApplicationViewModel Myapp { get; set; }
+        public IGetImageOfCard GetImageCard { get; set; }
+        public IGetNextCard nextCard { get; set; }
         public MainWindow()
         {
             InitializeComponent();
-            Myapp = new();
-            DataContext = Myapp;
+            IServiceCollection serviceCollection = new ServiceCollection();
+            serviceCollection.AddSingleton<ApplicationViewModel>();
+            serviceCollection.AddSingleton<IViewModelBuilder, ViewModelBuilder>();
+            serviceCollection.AddSingleton<IGetNextCard, GetNextCard>();
+            serviceCollection.AddSingleton<IGetImageOfCard, GetImageOfCard>();
+            IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
+            Myapp=serviceProvider.GetRequiredService<ApplicationViewModel>();
+            DataContext=Myapp;
+            nextCard=serviceProvider.GetRequiredService<IGetNextCard>();
+            GetImageCard=serviceProvider.GetRequiredService<IGetImageOfCard>();
         }
 
         private void cardDeck_Click(object sender, RoutedEventArgs e)
@@ -27,7 +40,8 @@ namespace wpfGasStations
             Button button = new();
             button.Height=100;
             button.Width=67;
-            button.Content=Resources["cardSelect"];
+            Card card = nextCard.GetNextCard();
+            button.Content=GetImageCard.GetImage(card);
             if (currentCardDeck.Children.Count>0)
                 currentCardDeck.Children.Clear();
             currentCardDeck.Children.Add(button);

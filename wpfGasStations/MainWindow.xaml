@@ -7,11 +7,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1280">
     <Window.Resources>
-        <Image x:Key="cardBack" Source="{Binding Path=imageBackCard}"/>
+        <Image x:Key="cardBack" Source="{Binding Path=ImageBackCard}"/>
     </Window.Resources>
     <Grid x:Name="GlobalGrid">
         <Grid.Background>
-            <ImageBrush ImageSource="{Binding Path=imageBackGround}" Stretch="UniformToFill"/>
+            <ImageBrush ImageSource="{Binding Path=ImageBackGround}" Stretch="UniformToFill"/>
         </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.3*"/>
@@ -26,7 +26,36 @@
             <StackPanel x:Name="currentCardDeck" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Separator Opacity="0" Width="400"/>
             <StackPanel x:Name="currentAce1Deck"/>
+            <Separator Opacity="0" Width="100"/>
+            <StackPanel x:Name="currentAce2Deck"/>
+            <Separator Opacity="0" Width="100"/>
+            <StackPanel x:Name="currentAce3Deck"/>
+            <Separator Opacity="0" Width="100"/>
+            <StackPanel x:Name="currentAce4Deck"/>
         </StackPanel>
+        <Canvas Grid.Column="1" Grid.Row="1">
+            <Canvas Canvas.Top="100" Canvas.Left="100">
+                <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
+            </Canvas>
+            <Canvas Canvas.Top="100" Canvas.Left="225">
+                <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
+            </Canvas>
+            <Canvas Canvas.Top="100" Canvas.Left="350">
+                <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
+            </Canvas>
+            <Canvas Canvas.Top="100" Canvas.Left="475">
+                <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
+            </Canvas>
+            <Canvas Canvas.Top="100" Canvas.Left="600">
+                <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
+            </Canvas>
+            <Canvas Canvas.Top="100" Canvas.Left="725">
+                <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
+            </Canvas>
+            <Canvas Canvas.Top="100" Canvas.Left="850">
+                <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
+            </Canvas>
+        </Canvas>
     </Grid>
     
 </Window>

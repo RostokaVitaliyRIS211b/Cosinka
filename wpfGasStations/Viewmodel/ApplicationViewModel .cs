@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -31,14 +32,26 @@ namespace wpfGasStations
         public ObservableCollection<Card> tableDeck7;
         public Card? SelectedCard = null;
         public string path;
-        public ImageSource imageBackCard { get; set; }
-        public ImageSource imageBackGround { get; set; }
-        public ApplicationViewModel()
+        public BitmapImage CardsMapImage;
+        public ImageSource ImageBackCard { get; set; }
+        public ImageSource ImageBackGround { get; set; }
+        public ApplicationViewModel(IViewModelBuilder viewModelBuilder)
         {
             path = Path.GetFullPath(".");
             Uri uri = new Uri(path+"\\resources\\card.jpg",UriKind.Absolute);
-            imageBackCard=new BitmapImage(uri);
-            imageBackGround=new BitmapImage(new Uri(path+"\\resources\\70.jpg"));
+            ImageBackCard=new BitmapImage(uri);
+            ImageBackGround=new BitmapImage(new Uri(path+"\\resources\\70.jpg"));
+            List<ObservableCollection<Card>> observableCollections = new(viewModelBuilder.GetDecks());
+            deck=observableCollections.Last();
+            tableDeck1=observableCollections.First(x => x.Count==1);
+            tableDeck2=observableCollections.First(x => x.Count==2);
+            tableDeck3=observableCollections.First(x => x.Count==3);
+            tableDeck4=observableCollections.First(x => x.Count==4);
+            tableDeck5=observableCollections.First(x => x.Count==5);
+            tableDeck6=observableCollections.First(x => x.Count==6);
+            tableDeck7=observableCollections.First(x => x.Count==7);
+            Uri uri2 = new Uri(path+"\\resources\\521.png", UriKind.Absolute);
+            CardsMapImage = new(uri2);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

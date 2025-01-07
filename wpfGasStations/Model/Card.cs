@@ -20,7 +20,7 @@ namespace wpfGasStations
         Jack,
         Queen,
         King,
-        Ace,
+        Ace=1,
     }
     public enum CardSuit
     {
@@ -32,12 +32,10 @@ namespace wpfGasStations
 
     public readonly record struct Card
     {
-        public string ImagePath { get; init; }
         public CardRank Rank { get; init; }
         public CardSuit Suit { get; init; }
-        public Card(string imagePath, CardRank cardRank, CardSuit cardSuit)
+        public Card(CardRank cardRank, CardSuit cardSuit)
         {
-            ImagePath = imagePath;
             Rank = cardRank;
             Suit = cardSuit;
         }
