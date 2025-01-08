@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using wpfGasStations;
+using wpfCosinka;
 
-namespace Cosinka.Viewmodel
+namespace Cosinka.Viewmodel.Interfaces
 {
     public interface IGetImageOfCard
     {

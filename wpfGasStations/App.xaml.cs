@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace wpfGasStations
+namespace wpfCosinka
 {
     /// <summary>
     /// Interaction logic for App.xaml

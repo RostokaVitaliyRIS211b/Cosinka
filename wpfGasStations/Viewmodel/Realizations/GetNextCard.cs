@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Cosinka.Viewmodel.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using wpfGasStations;
+using wpfCosinka;
 
-namespace Cosinka.Viewmodel
+namespace Cosinka.Viewmodel.Realizations
 {
     public class GetNextCard : IGetNextCard
     {

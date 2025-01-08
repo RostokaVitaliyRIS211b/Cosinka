@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cosinka.Viewmodel.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using wpfGasStations;
+using wpfCosinka;
 
-namespace Cosinka.Viewmodel
+namespace Cosinka.Viewmodel.Realizations
 {
     public class GetImageOfCard : IGetImageOfCard
     {
@@ -19,7 +20,7 @@ namespace Cosinka.Viewmodel
         }
         public Image GetImage(Card card)
         {
-            Int32Rect int32Rect = new(12+(122*(((int)card.Rank)-1)), 12+180*((int)card.Suit), 108, 162);
+            Int32Rect int32Rect = new(12+122*((int)card.Rank-1), 12+180*(int)card.Suit, 108, 162);
             Image image = new();
             image.Source = new CroppedBitmap(app.CardsMapImage, int32Rect);
             return image;

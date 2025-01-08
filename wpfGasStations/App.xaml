@@ -1,7 +1,7 @@
-﻿<Application x:Class="wpfGasStations.App"
+﻿<Application x:Class="wpfCosinka.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:wpfGasStations"
+             xmlns:local="clr-namespace:wpfCosinka"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

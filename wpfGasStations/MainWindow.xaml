@@ -1,13 +1,13 @@
-﻿<Window x:Class="wpfGasStations.MainWindow"
+﻿<Window x:Class="wpfCosinka.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:wpfGasStations"
+        xmlns:local="clr-namespace:wpfCosinka"
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1280">
     <Window.Resources>
-        <Image x:Key="cardBack" Source="{Binding Path=ImageBackCard}"/>
+        <Image x:Key="cardBack" x:Name="cardsBack" Source="{Binding Path=ImageBackCard}"/>
     </Window.Resources>
     <Grid x:Name="GlobalGrid">
         <Grid.Background>
@@ -22,37 +22,47 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Button x:Name="cardDeck" Grid.Column="0" Grid.Row="0" Height="100" Width="67" Content="{StaticResource cardBack}"  Click="cardDeck_Click" />
-        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left">
-            <StackPanel x:Name="currentCardDeck" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Canvas Grid.Row="0" Grid.Column="1" >
+            <Canvas x:Name="currentCardDeck"  Canvas.Top="32">
+                <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
+            </Canvas>
             <Separator Opacity="0" Width="400"/>
-            <StackPanel x:Name="currentAce1Deck"/>
+            <Canvas x:Name="currentAce1Deck" Canvas.Top="32" Canvas.Left="400">
+                <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
+            </Canvas>
             <Separator Opacity="0" Width="100"/>
-            <StackPanel x:Name="currentAce2Deck"/>
+            <Canvas x:Name="currentAce2Deck" Canvas.Top="32" Canvas.Left="500">
+                <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
+            </Canvas>
             <Separator Opacity="0" Width="100"/>
-            <StackPanel x:Name="currentAce3Deck"/>
+            <Canvas x:Name="currentAce3Deck"  Canvas.Top="32" Canvas.Left="600">
+                <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
+            </Canvas>
             <Separator Opacity="0" Width="100"/>
-            <StackPanel x:Name="currentAce4Deck"/>
-        </StackPanel>
+            <Canvas x:Name="currentAce4Deck" Canvas.Top="32" Canvas.Left="700">
+            <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
+            </Canvas>
+        </Canvas>
         <Canvas Grid.Column="1" Grid.Row="1">
-            <Canvas Canvas.Top="100" Canvas.Left="100">
+            <Canvas Canvas.Top="100" Canvas.Left="100"  x:Name="currenttable1Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
-            <Canvas Canvas.Top="100" Canvas.Left="225">
+            <Canvas Canvas.Top="100" Canvas.Left="225"  x:Name="currenttable2Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
-            <Canvas Canvas.Top="100" Canvas.Left="350">
+            <Canvas Canvas.Top="100" Canvas.Left="350"  x:Name="currenttable3Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
-            <Canvas Canvas.Top="100" Canvas.Left="475">
+            <Canvas Canvas.Top="100" Canvas.Left="475"  x:Name="currenttable4Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
-            <Canvas Canvas.Top="100" Canvas.Left="600">
+            <Canvas Canvas.Top="100" Canvas.Left="600"  x:Name="currenttable5Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
-            <Canvas Canvas.Top="100" Canvas.Left="725">
+            <Canvas Canvas.Top="100" Canvas.Left="725"  x:Name="currenttable6Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
-            <Canvas Canvas.Top="100" Canvas.Left="850">
+            <Canvas Canvas.Top="100" Canvas.Left="850"  x:Name="currenttable7Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
         </Canvas>

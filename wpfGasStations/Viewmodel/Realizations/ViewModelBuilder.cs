@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Cosinka.Viewmodel.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using wpfGasStations;
+using wpfCosinka;
 
-namespace Cosinka.Viewmodel
+namespace Cosinka.Viewmodel.Realizations
 {
     public class ViewModelBuilder : IViewModelBuilder
     {
@@ -14,18 +15,18 @@ namespace Cosinka.Viewmodel
         public IEnumerable<ObservableCollection<Card>> GetDecks()
         {
             ObservableCollection<Card> deck = new();
-            for(int i=0;i<4;++i)
+            for (int i = 0; i<4; ++i)
             {
-                for(int j=1;j<14;++j)
+                for (int j = 1; j<14; ++j)
                 {
                     deck.Add(new Card((CardRank)j, (CardSuit)i));
                 }
             }
             List<ObservableCollection<Card>> cards = new();
-            for(int i=1;i<8;++i)
+            for (int i = 1; i<8; ++i)
             {
                 ObservableCollection<Card> Somedeck = new();
-                for(int j=0;j<i;++j)
+                for (int j = 0; j<i; ++j)
                 {
                     int random3 = random.Next(0, deck.Count-1);
                     Somedeck.Add(deck[random3]);
