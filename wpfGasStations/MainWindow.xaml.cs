@@ -110,12 +110,28 @@ namespace wpfCosinka
                             {
                                 if (Myapp.tableDecks[i].Count==0)
                                 {
-                                    pos.Item2.Children.Remove(button);
-                                    pos.Item1.Remove(button.Card);
-                                    Myapp.tableDecks[i].Add(button.Card);
                                     Canvas canvas = allTableDecks.Children.OfType<Canvas>().ToList()[i];
-                                    Canvas.SetTop(button, 0);
-                                    canvas.Children.Add(button);
+                                    List<MyCardButton> needToMove = new() { button };
+                                    if (pos.Item1.IndexOf(button.Card)!=pos.Item1.Count-1 && pos.Item2.Children.Count>2)
+                                    {
+                                        for (int j = pos.Item1.IndexOf(button.Card)+2; j<pos.Item1.Count+1; ++j)
+                                        {
+                                            MyCardButton button1 = pos.Item2.Children[j] as MyCardButton;
+                                            needToMove.Add(button1);
+                                        }
+                                    }
+                                    for (int j = 0; j<needToMove.Count; ++j)
+                                    {
+                                        pos.Item2.Children.Remove(needToMove[j]);
+                                        pos.Item1.Remove(needToMove[j].Card);
+                                        Myapp.tableDecks[i].Add(needToMove[j].Card);
+
+                                        Canvas.SetTop(needToMove[j], 30*(canvas.Children.Count-1));
+                                        canvas.Children.Add(needToMove[j]);
+                                    }
+
+                                    OpenCard(pos.Item2.Children);
+                                    break;
                                 }
                             }
                         }
@@ -132,12 +148,26 @@ namespace wpfCosinka
                                 Card? card = Myapp.tableDecks[i].LastOrDefault();
                                 if (card is not null && CardHelp.IsCompatable(button.Card, card))
                                 {
-                                    pos.Item2.Children.Remove(button);
-                                    pos.Item1.Remove(button.Card);
-                                    Myapp.tableDecks[i].Add(button.Card);
                                     Canvas canvas = allTableDecks.Children.OfType<Canvas>().ToList()[i];
-                                    Canvas.SetTop(button, 30*(canvas.Children.Count-1));
-                                    canvas.Children.Add(button);
+                                    List<MyCardButton> needToMove = new(){ button };
+                                    if(pos.Item1.IndexOf(button.Card)!=pos.Item1.Count-1 && pos.Item2.Children.Count>2)
+                                    {
+                                        for(int j= pos.Item1.IndexOf(button.Card)+2;j<pos.Item1.Count+1;++j)
+                                        {
+                                            MyCardButton button1 = pos.Item2.Children[j] as MyCardButton;
+                                            needToMove.Add(button1);
+                                        }
+                                    }
+                                    for(int j=0;j<needToMove.Count;++j)
+                                    {
+                                        pos.Item2.Children.Remove(needToMove[j]);
+                                        pos.Item1.Remove(needToMove[j].Card);
+                                        Myapp.tableDecks[i].Add(needToMove[j].Card);
+                                        
+                                        Canvas.SetTop(needToMove[j], 30*(canvas.Children.Count-1));
+                                        canvas.Children.Add(needToMove[j]);
+                                    }
+                                   
                                     OpenCard(pos.Item2.Children);
                                     break;
                                 }
@@ -145,6 +175,10 @@ namespace wpfCosinka
                         }
                     }
                     #endregion
+                }
+                if(Myapp.ace1.Count==13 && Myapp.ace2.Count==13 && Myapp.ace3.Count==13 && Myapp.ace4.Count==13)
+                {
+                    MessageBox.Show("ПОБЕДА");
                 }
             }
         }
@@ -169,7 +203,7 @@ namespace wpfCosinka
             {
                 if (Myapp.tableDecks[i].Contains(button.Card))
                 {
-                    pos.Item1 = Myapp.aces[i];
+                    pos.Item1 = Myapp.tableDecks[i];
                     pos.Item2 = allTableDecks.Children.OfType<Canvas>().ToList()[i];
                     break;
                 }
@@ -178,7 +212,7 @@ namespace wpfCosinka
         }
         private void OpenCard(UIElementCollection collection)
         {
-            if(collection.Count>0)
+            if(collection.Count>1)
             {
                 IEnumerable<MyCardButton> myCardButtons = collection.OfType<MyCardButton>();
                 MyCardButton last = myCardButtons.Last();
@@ -189,21 +223,24 @@ namespace wpfCosinka
         private bool TryToAce(MyCardButton myCard, (ObservableCollection<Card>, Canvas) pos)
         {
             bool isAcing = false;
-            for(int i=0;i<4;++i)
+            if(pos.Item1.IndexOf(myCard.Card)==pos.Item1.Count-1 || pos.Item1==Myapp.deck)
             {
-                if (Myapp.aces[i].Count>0)
+                for (int i = 0; i<4; ++i)
                 {
-                    if (CardHelp.IsAceCompatable(myCard.Card, Myapp.aces[i].Last()))
+                    if (Myapp.aces[i].Count>0)
                     {
-                        isAcing = true;
-                        Canvas.SetTop(myCard, 0);
-                        pos.Item2.Children.Remove(myCard);
-                        pos.Item1.Remove(myCard.Card);
-                        Myapp.aces[i].Add(myCard.Card);
-                        Canvas canvas = allAces.Children.OfType<Canvas>().ToList()[i+1];
-                        canvas.Children.Add(myCard);
-                        OpenCard(pos.Item2.Children);
-                        break;
+                        if (CardHelp.IsAceCompatable(myCard.Card, Myapp.aces[i].Last()))
+                        {
+                            isAcing = true;
+                            Canvas.SetTop(myCard, 0);
+                            pos.Item2.Children.Remove(myCard);
+                            pos.Item1.Remove(myCard.Card);
+                            Myapp.aces[i].Add(myCard.Card);
+                            Canvas canvas = allAces.Children.OfType<Canvas>().ToList()[i+1];
+                            canvas.Children.Add(myCard);
+                            OpenCard(pos.Item2.Children);
+                            break;
+                        }
                     }
                 }
             }

@@ -27,7 +27,7 @@ namespace Cosinka.Viewmodel
         }
         public static bool IsAceCompatable(Card card1, Card card2)
         {
-            bool rank = card1.Rank>card2.Rank;
+            bool rank = card1.Rank-card2.Rank==1;
             bool suit = card1.Suit==card2.Suit;
             return rank && suit;
         }
