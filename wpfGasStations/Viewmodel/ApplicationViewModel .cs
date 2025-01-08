@@ -24,6 +24,7 @@ namespace wpfCosinka
         public ObservableCollection<Card> ace2=new();
         public ObservableCollection<Card> ace3=new();
         public ObservableCollection<Card> ace4=new();
+        public List<ObservableCollection<Card>> aces = new();
         public ObservableCollection<Card> tableDeck1;
         public ObservableCollection<Card> tableDeck2;
         public ObservableCollection<Card> tableDeck3;
@@ -31,6 +32,7 @@ namespace wpfCosinka
         public ObservableCollection<Card> tableDeck5;
         public ObservableCollection<Card> tableDeck6;
         public ObservableCollection<Card> tableDeck7;
+        public List<ObservableCollection<Card>> tableDecks = new();
         public Card? SelectedCard = null;
         public string path;
         public BitmapImage CardsMapImage;
@@ -53,6 +55,17 @@ namespace wpfCosinka
             tableDeck7=observableCollections.First(x => x.Count==7);
             Uri uri2 = new Uri(path+"\\resources\\521.png", UriKind.Absolute);
             CardsMapImage = new(uri2);
+            aces.Add(ace1);
+            aces.Add(ace2);
+            aces.Add(ace3);
+            aces.Add(ace4);
+            tableDecks.Add(tableDeck1);
+            tableDecks.Add(tableDeck2);
+            tableDecks.Add(tableDeck3);
+            tableDecks.Add(tableDeck4);
+            tableDecks.Add(tableDeck5);
+            tableDecks.Add(tableDeck6);
+            tableDecks.Add(tableDeck7);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

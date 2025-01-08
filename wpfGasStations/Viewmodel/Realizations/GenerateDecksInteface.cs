@@ -23,44 +23,18 @@ namespace Cosinka.Viewmodel.Realizations
         {
             List<MyCardButton> myCardButtons = new(GenerateForSomeCollection(application.tableDeck1));
             window.currenttable1Deck.Children.Add(myCardButtons[0]);
+            for(int i=1;i<application.tableDecks.Count;++i)
+            {
+                myCardButtons= new(GenerateForSomeCollection(application.tableDecks[i]));
+                Canvas canvas = window.allTableDecks.Children[i] as Canvas;
+                for (int j = 0; j<myCardButtons.Count; ++j)
+                {
+                    Canvas.SetTop(myCardButtons[j], 30*j);
+                    canvas.Children.Add(myCardButtons[j]);
+                }
+            }
+           
 
-            myCardButtons= new(GenerateForSomeCollection(application.tableDeck2));
-            for (int i = 0; i<myCardButtons.Count; ++i)
-            {
-                Canvas.SetTop(myCardButtons[i], 30*i);
-                window.currenttable2Deck.Children.Add(myCardButtons[i]);
-            }
-
-            myCardButtons= new(GenerateForSomeCollection(application.tableDeck3));
-            for (int i = 0; i<myCardButtons.Count; ++i)
-            {
-                Canvas.SetTop(myCardButtons[i], 30*i);
-                window.currenttable3Deck.Children.Add(myCardButtons[i]);
-            }
-            myCardButtons= new(GenerateForSomeCollection(application.tableDeck4));
-            for (int i = 0; i<myCardButtons.Count; ++i)
-            {
-                Canvas.SetTop(myCardButtons[i], 30*i);
-                window.currenttable4Deck.Children.Add(myCardButtons[i]);
-            }
-            myCardButtons= new(GenerateForSomeCollection(application.tableDeck5));
-            for (int i = 0; i<myCardButtons.Count; ++i)
-            {
-                Canvas.SetTop(myCardButtons[i], 30*i);
-                window.currenttable5Deck.Children.Add(myCardButtons[i]);
-            }
-            myCardButtons= new(GenerateForSomeCollection(application.tableDeck6));
-            for (int i = 0; i<myCardButtons.Count; ++i)
-            {
-                Canvas.SetTop(myCardButtons[i], 30*i);
-                window.currenttable6Deck.Children.Add(myCardButtons[i]);
-            }
-            myCardButtons= new(GenerateForSomeCollection(application.tableDeck7));
-            for (int i = 0; i<myCardButtons.Count; ++i)
-            {
-                Canvas.SetTop(myCardButtons[i], 30*i);
-                window.currenttable7Deck.Children.Add(myCardButtons[i]);
-            }
         }
         protected IList<MyCardButton> GenerateForSomeCollection(IList<Card> cards)
         {

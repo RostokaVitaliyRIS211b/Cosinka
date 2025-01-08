@@ -30,7 +30,7 @@ namespace wpfCosinka
         Spade
     }
 
-    public readonly record struct Card
+    public record class Card
     {
         public CardRank Rank { get; init; }
         public CardSuit Suit { get; init; }

@@ -22,7 +22,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Button x:Name="cardDeck" Grid.Column="0" Grid.Row="0" Height="100" Width="67" Content="{StaticResource cardBack}"  Click="cardDeck_Click" />
-        <Canvas Grid.Row="0" Grid.Column="1" >
+        <Canvas Grid.Row="0" Grid.Column="1" x:Name="allAces" >
             <Canvas x:Name="currentCardDeck"  Canvas.Top="32">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
@@ -43,7 +43,7 @@
             <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
         </Canvas>
-        <Canvas Grid.Column="1" Grid.Row="1">
+        <Canvas Grid.Column="1" Grid.Row="1" x:Name="allTableDecks">
             <Canvas Canvas.Top="100" Canvas.Left="100"  x:Name="currenttable1Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>

@@ -13,7 +13,7 @@ namespace Cosinka.Viewmodel
     {
         public static bool IsCompatable(Card card1,Card card2)
         {
-            bool rank = card1.Rank<card2.Rank;
+            bool rank = card2.Rank-card1.Rank==1;
             bool suit = false;
             if(card1.Suit==CardSuit.Heart || card1.Suit==CardSuit.Diamond)
             {

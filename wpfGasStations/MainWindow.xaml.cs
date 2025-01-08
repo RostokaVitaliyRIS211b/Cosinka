@@ -68,7 +68,6 @@ namespace wpfCosinka
         {
             if (sender is MyCardButton button)
             {
-                MyCardButton? compatable = null;
                 (ObservableCollection<Card>, Canvas) pos = Position(button);
                 if (button.IsOpen && pos.Item2!=currentAce1Deck && pos.Item2!=currentAce2Deck && pos.Item2!=currentAce3Deck && pos.Item2!=currentAce1Deck)
                 {
@@ -76,6 +75,7 @@ namespace wpfCosinka
                     if (button.Card.Rank==CardRank.Ace)
                     {
                         pos.Item2.Children.Remove(button);
+                        Canvas.SetTop(button, 0);
                         if (button.Card.Suit==CardSuit.Heart)
                         {
                             currentAce1Deck.Children.Add(button);
@@ -97,92 +97,117 @@ namespace wpfCosinka
                             Myapp.ace4.Add(button.Card);
                         }
                         pos.Item1.Remove(button.Card);
-                        if(pos.Item2!= currentCardDeck)
-                            OpenCard(pos.Item2.Children.OfType<MyCardButton>());
+                        OpenCard(pos.Item2.Children);
                     }
                     #endregion
-
-                }
-                if (compatable is not null)
-                {
-                    (ObservableCollection<Card>, Canvas) pos2 = Position(compatable);
+                    #region Kings
+                    else if (button.Card.Rank==CardRank.King)
+                    {
+                        bool IsIAce = TryToAce(button, pos);
+                        if(!IsIAce)
+                        {
+                            for(int i=0;i<Myapp.tableDecks.Count;++i)
+                            {
+                                if (Myapp.tableDecks[i].Count==0)
+                                {
+                                    pos.Item2.Children.Remove(button);
+                                    pos.Item1.Remove(button.Card);
+                                    Myapp.tableDecks[i].Add(button.Card);
+                                    Canvas canvas = allTableDecks.Children.OfType<Canvas>().ToList()[i];
+                                    Canvas.SetTop(button, 0);
+                                    canvas.Children.Add(button);
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+                    #region EveryElseCard
+                    else
+                    {
+                        bool IsAcing = TryToAce(button, pos);
+                        if(!IsAcing)
+                        {
+                            for (int i = 0; i<Myapp.tableDecks.Count; ++i)
+                            {
+                                Card? card = Myapp.tableDecks[i].LastOrDefault();
+                                if (card is not null && CardHelp.IsCompatable(button.Card, card))
+                                {
+                                    pos.Item2.Children.Remove(button);
+                                    pos.Item1.Remove(button.Card);
+                                    Myapp.tableDecks[i].Add(button.Card);
+                                    Canvas canvas = allTableDecks.Children.OfType<Canvas>().ToList()[i];
+                                    Canvas.SetTop(button, 30*(canvas.Children.Count-1));
+                                    canvas.Children.Add(button);
+                                    OpenCard(pos.Item2.Children);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    #endregion
                 }
             }
         }
         private (ObservableCollection<Card>, Canvas) Position(MyCardButton button)
         {
             (ObservableCollection<Card>, Canvas) pos = new(null, null);
-            if (currentAce1Deck.Children.Contains(button))
+            for(int i=0;i<Myapp.aces.Count;++i)
             {
-                pos.Item1=Myapp.ace1;
-                pos.Item2=currentAce1Deck;
-            }
-            if (currentAce2Deck.Children.Contains(button))
-            {
-                pos.Item1=Myapp.ace2;
-                pos.Item2=currentAce2Deck;
-            }
-            if (currentAce3Deck.Children.Contains(button))
-            {
-                pos.Item1=Myapp.ace3;
-                pos.Item2=currentAce3Deck;
-            }
-            if (currentAce4Deck.Children.Contains(button))
-            {
-                pos.Item1=Myapp.ace4;
-                pos.Item2=currentAce4Deck;
+                if (Myapp.aces[i].Contains(button.Card))
+                {
+                    pos.Item1 = Myapp.aces[i];
+                    pos.Item2 = allAces.Children.OfType<Canvas>().ToList()[i+1];
+                    break;
+                }
             }
             if (currentCardDeck.Children.Contains(button))
             {
                 pos.Item1=Myapp.deck;
                 pos.Item2=currentCardDeck;
             }
-            if (currenttable1Deck.Children.Contains(button))
+            for (int i = 0; i<Myapp.tableDecks.Count; ++i)
             {
-                pos.Item1=Myapp.tableDeck1;
-                pos.Item2=currenttable1Deck;
+                if (Myapp.tableDecks[i].Contains(button.Card))
+                {
+                    pos.Item1 = Myapp.aces[i];
+                    pos.Item2 = allTableDecks.Children.OfType<Canvas>().ToList()[i];
+                    break;
+                }
             }
-            if (currenttable2Deck.Children.Contains(button))
-            {
-                pos.Item1=Myapp.tableDeck2;
-                pos.Item2=currenttable2Deck;
-            }
-            if (currenttable3Deck.Children.Contains(button))
-            {
-                pos.Item1=Myapp.tableDeck3;
-                pos.Item2=currenttable3Deck;
-            }
-            if (currenttable4Deck.Children.Contains(button))
-            {
-                pos.Item1=Myapp.tableDeck4;
-                pos.Item2=currenttable4Deck;
-            }
-            if (currenttable5Deck.Children.Contains(button))
-            {
-                pos.Item1=Myapp.tableDeck5;
-                pos.Item2=currenttable5Deck;
-            }
-            if (currenttable6Deck.Children.Contains(button))
-            {
-                pos.Item1=Myapp.tableDeck6;
-                pos.Item2=currenttable6Deck;
-            }
-            if (currenttable7Deck.Children.Contains(button))
-            {
-                pos.Item1=Myapp.tableDeck7;
-                pos.Item2=currenttable7Deck;
-            }
-
             return pos;
         }
-        private void OpenCard(IEnumerable<MyCardButton> myCardButtons)
+        private void OpenCard(UIElementCollection collection)
         {
-            if(myCardButtons.Count()>0)
+            if(collection.Count>0)
             {
+                IEnumerable<MyCardButton> myCardButtons = collection.OfType<MyCardButton>();
                 MyCardButton last = myCardButtons.Last();
                 last.IsOpen=true;
                 last.Content = GetImageCard.GetImage(last.Card);
             }
+        }
+        private bool TryToAce(MyCardButton myCard, (ObservableCollection<Card>, Canvas) pos)
+        {
+            bool isAcing = false;
+            for(int i=0;i<4;++i)
+            {
+                if (Myapp.aces[i].Count>0)
+                {
+                    if (CardHelp.IsAceCompatable(myCard.Card, Myapp.aces[i].Last()))
+                    {
+                        isAcing = true;
+                        Canvas.SetTop(myCard, 0);
+                        pos.Item2.Children.Remove(myCard);
+                        pos.Item1.Remove(myCard.Card);
+                        Myapp.aces[i].Add(myCard.Card);
+                        Canvas canvas = allAces.Children.OfType<Canvas>().ToList()[i+1];
+                        canvas.Children.Add(myCard);
+                        OpenCard(pos.Item2.Children);
+                        break;
+                    }
+                }
+            }
+            return isAcing;
         }
     }
 }
