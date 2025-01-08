@@ -12,8 +12,8 @@ namespace Cosinka.Viewmodel
     {
         public static void GetStyle1Button (Button button)
         {
-            button.Height=100;
-            button.Width=67;
+            button.Height=120;
+            button.Width=87;
         }
     }
 }

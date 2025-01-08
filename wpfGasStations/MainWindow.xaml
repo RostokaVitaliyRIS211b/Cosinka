@@ -44,25 +44,25 @@
             </Canvas>
         </Canvas>
         <Canvas Grid.Column="1" Grid.Row="1" x:Name="allTableDecks">
-            <Canvas Canvas.Top="100" Canvas.Left="100"  x:Name="currenttable1Deck">
+            <Canvas Canvas.Top="50" Canvas.Left="100"  x:Name="currenttable1Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
-            <Canvas Canvas.Top="100" Canvas.Left="225"  x:Name="currenttable2Deck">
+            <Canvas Canvas.Top="50" Canvas.Left="225"  x:Name="currenttable2Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
-            <Canvas Canvas.Top="100" Canvas.Left="350"  x:Name="currenttable3Deck">
+            <Canvas Canvas.Top="50" Canvas.Left="350"  x:Name="currenttable3Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
-            <Canvas Canvas.Top="100" Canvas.Left="475"  x:Name="currenttable4Deck">
+            <Canvas Canvas.Top="50" Canvas.Left="475"  x:Name="currenttable4Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
-            <Canvas Canvas.Top="100" Canvas.Left="600"  x:Name="currenttable5Deck">
+            <Canvas Canvas.Top="50" Canvas.Left="600"  x:Name="currenttable5Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
-            <Canvas Canvas.Top="100" Canvas.Left="725"  x:Name="currenttable6Deck">
+            <Canvas Canvas.Top="50" Canvas.Left="725"  x:Name="currenttable6Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
-            <Canvas Canvas.Top="100" Canvas.Left="850"  x:Name="currenttable7Deck">
+            <Canvas Canvas.Top="50" Canvas.Left="850"  x:Name="currenttable7Deck">
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
         </Canvas>

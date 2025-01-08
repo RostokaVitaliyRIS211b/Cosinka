@@ -55,14 +55,18 @@ namespace wpfCosinka
         private void cardDeck_Click(object sender, RoutedEventArgs e)
         {
             Card card = nextCard.GetNextCard();
-            MyCardButton button = new(card, true);
-            button.Height=100;
-            button.Width=67;
-            button.Click+=card_Click;
-            button.Content=GetImageCard.GetImage(card);
-            if (currentCardDeck.Children.Count>0)
-                currentCardDeck.Children.Clear();
-            currentCardDeck.Children.Add(button);
+            if(card!=null)
+            {
+                MyCardButton button = new(card, true);
+                ButtonTemplates.GetStyle1Button(button);
+                button.Click+=card_Click;
+                button.Content=GetImageCard.GetImage(card);
+                if (currentCardDeck.Children.Count>0)
+                    currentCardDeck.Children.Clear();
+                currentCardDeck.Children.Add(button);
+                if (Myapp.deck.Count==1)
+                    cardDeck.Content = null;
+            }
         }
         private void card_Click(object sender, RoutedEventArgs e)
         {

@@ -17,9 +17,12 @@ namespace Cosinka.Viewmodel.Realizations
         {
             cards = model.deck;
         }
-        Card IGetNextCard.GetNextCard()
+        Card? IGetNextCard.GetNextCard()
         {
-            i=(i+1)%cards.Count;
+            if (cards.Count>0)
+                i=(i+1)%cards.Count;
+            else
+                return null;
             return cards[i];
         }
     }
