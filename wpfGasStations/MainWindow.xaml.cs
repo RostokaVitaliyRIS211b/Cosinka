@@ -21,9 +21,10 @@ namespace wpfCosinka
 
     public partial class MainWindow : Window
     {
-        public ApplicationViewModel Myapp { get; set; }
+        public ApplicationViewModel MyApp { get; set; }
         public IGetImageOfCard GetImageCard { get; set; }
-        public IGetNextCard nextCard { get; set; }
+        public IGetNextCard NextCard { get; set; }
+        public IGetNewPostition GetNewPostition { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -34,11 +35,13 @@ namespace wpfCosinka
             serviceCollection.AddSingleton<IGetImageOfCard, GetImageOfCard>();
             serviceCollection.AddSingleton<IGenerateDecksInterface, GenerateDecksInteface>();
             serviceCollection.AddSingleton<MainWindow>(this);
+            serviceCollection.AddSingleton<IGetNewPostition, GetNewPositionRealization>();
             serviceCollection.AddScoped<ISetHandlerClick, SetHandler>();
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
-            Myapp=serviceProvider.GetRequiredService<ApplicationViewModel>();
-            DataContext=Myapp;
-            nextCard=serviceProvider.GetRequiredService<IGetNextCard>();
+            MyApp=serviceProvider.GetRequiredService<ApplicationViewModel>();
+            DataContext=MyApp;
+            GetNewPostition = serviceProvider.GetRequiredService<IGetNewPostition>();
+            NextCard =serviceProvider.GetRequiredService<IGetNextCard>();
             GetImageCard=serviceProvider.GetRequiredService<IGetImageOfCard>();
             IGenerateDecksInterface generateDecksInterface = serviceProvider.GetRequiredService<IGenerateDecksInterface>();
             generateDecksInterface.GenerateInterface(this);
@@ -54,7 +57,7 @@ namespace wpfCosinka
 
         private void cardDeck_Click(object sender, RoutedEventArgs e)
         {
-            Card card = nextCard.GetNextCard();
+            Card card = NextCard.GetNextCard();
             if(card!=null)
             {
                 MyCardButton button = new(card, true);
@@ -64,7 +67,7 @@ namespace wpfCosinka
                 if (currentCardDeck.Children.Count>0)
                     currentCardDeck.Children.Clear();
                 currentCardDeck.Children.Add(button);
-                if (Myapp.deck.Count==1)
+                if (MyApp.deck.Count==1)
                     cardDeck.Content = null;
             }
         }
@@ -72,151 +75,51 @@ namespace wpfCosinka
         {
             if (sender is MyCardButton button)
             {
-                (ObservableCollection<Card>, Canvas) pos = Position(button);
-                if (button.IsOpen && pos.Item2!=currentAce1Deck && pos.Item2!=currentAce2Deck && pos.Item2!=currentAce3Deck && pos.Item2!=currentAce1Deck)
+                (ObservableCollection<Card>, Canvas) myPosition = Position(button);
+                (ObservableCollection<Card>?, Canvas?) newPosition = GetNewPostition.GetNewPosition(button);
+                if(newPosition.Item1 is not null)
                 {
-                    #region Aces
-                    if (button.Card.Rank==CardRank.Ace)
+                    if(allAces.Children.Contains(newPosition.Item2))
                     {
-                        pos.Item2.Children.Remove(button);
+                        myPosition.Item2.Children.Remove(button);
+                        myPosition.Item1.Remove(button.Card);
                         Canvas.SetTop(button, 0);
-                        if (button.Card.Suit==CardSuit.Heart)
-                        {
-                            currentAce1Deck.Children.Add(button);
-                            Myapp.ace1.Add(button.Card);
-                        }
-                        else if (button.Card.Suit==CardSuit.Diamond)
-                        {
-                            currentAce2Deck.Children.Add(button);
-                            Myapp.ace2.Add(button.Card);
-                        }
-                        else if (button.Card.Suit==CardSuit.Club)
-                        {
-                            currentAce3Deck.Children.Add(button);
-                            Myapp.ace3.Add(button.Card);
-                        }
-                        else
-                        {
-                            currentAce4Deck.Children.Add(button);
-                            Myapp.ace4.Add(button.Card);
-                        }
-                        pos.Item1.Remove(button.Card);
-                        OpenCard(pos.Item2.Children);
+                        newPosition.Item2.Children.Add(button);
+                        newPosition.Item1.Add(button.Card);
                     }
-                    #endregion
-                    #region Kings
-                    else if (button.Card.Rank==CardRank.King)
-                    {
-                        bool IsIAce = TryToAce(button, pos);
-                        if(!IsIAce)
-                        {
-                            for(int i=0;i<Myapp.tableDecks.Count;++i)
-                            {
-                                if (Myapp.tableDecks[i].Count==0)
-                                {
-                                    Canvas canvas = allTableDecks.Children.OfType<Canvas>().ToList()[i];
-                                    List<MyCardButton> needToMove = new() { button };
-                                    if (pos.Item1.IndexOf(button.Card)!=pos.Item1.Count-1 && pos.Item2.Children.Count>2)
-                                    {
-                                        for (int j = pos.Item1.IndexOf(button.Card)+2; j<pos.Item1.Count+1; ++j)
-                                        {
-                                            MyCardButton button1 = pos.Item2.Children[j] as MyCardButton;
-                                            needToMove.Add(button1);
-                                        }
-                                    }
-                                    for (int j = 0; j<needToMove.Count; ++j)
-                                    {
-                                        pos.Item2.Children.Remove(needToMove[j]);
-                                        pos.Item1.Remove(needToMove[j].Card);
-                                        Myapp.tableDecks[i].Add(needToMove[j].Card);
-
-                                        Canvas.SetTop(needToMove[j], 30*(canvas.Children.Count-1));
-                                        canvas.Children.Add(needToMove[j]);
-                                    }
-
-                                    OpenCard(pos.Item2.Children);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    #endregion
-                    #region EveryElseCard
                     else
                     {
-                        bool IsAcing = TryToAce(button, pos);
-                        if(!IsAcing)
+                        List<MyCardButton> needToMove = new() { button };
+                        if (myPosition.Item1.IndexOf(button.Card)!=myPosition.Item1.Count-1 && myPosition.Item2.Children.Count>2)
                         {
-                            for (int i = 0; i<Myapp.tableDecks.Count; ++i)
+                            for (int j = myPosition.Item1.IndexOf(button.Card)+2; j<myPosition.Item1.Count+1; ++j)
                             {
-                                Card? card = Myapp.tableDecks[i].LastOrDefault();
-                                if (card is not null && CardHelp.IsCompatable(button.Card, card))
-                                {
-                                    Canvas canvas = allTableDecks.Children.OfType<Canvas>().ToList()[i];
-                                    List<MyCardButton> needToMove = new(){ button };
-                                    if(pos.Item1.IndexOf(button.Card)!=pos.Item1.Count-1 && pos.Item2.Children.Count>2)
-                                    {
-                                        for(int j= pos.Item1.IndexOf(button.Card)+2;j<pos.Item1.Count+1;++j)
-                                        {
-                                            MyCardButton button1 = pos.Item2.Children[j] as MyCardButton;
-                                            needToMove.Add(button1);
-                                        }
-                                    }
-                                    for(int j=0;j<needToMove.Count;++j)
-                                    {
-                                        pos.Item2.Children.Remove(needToMove[j]);
-                                        pos.Item1.Remove(needToMove[j].Card);
-                                        Myapp.tableDecks[i].Add(needToMove[j].Card);
-                                        
-                                        Canvas.SetTop(needToMove[j], 30*(canvas.Children.Count-1));
-                                        canvas.Children.Add(needToMove[j]);
-                                    }
-                                   
-                                    OpenCard(pos.Item2.Children);
-                                    break;
-                                }
+                                MyCardButton button1 = myPosition.Item2.Children[j] as MyCardButton;
+                                needToMove.Add(button1);
                             }
                         }
+                        for (int j = 0; j<needToMove.Count; ++j)
+                        {
+                            myPosition.Item2.Children.Remove(needToMove[j]);
+                            myPosition.Item1.Remove(needToMove[j].Card);
+                            newPosition.Item1.Add(needToMove[j].Card);
+
+                            Canvas.SetTop(needToMove[j], 30*(newPosition.Item2.Children.Count-1));
+                            newPosition.Item2.Children.Add(needToMove[j]);
+                        }
                     }
-                    #endregion
+                    OpenCard(myPosition.Item2.Children);
+
                 }
-                if(Myapp.ace1.Count==13 && Myapp.ace2.Count==13 && Myapp.ace3.Count==13 && Myapp.ace4.Count==13)
+                if (MyApp.ace1.Count==13 && MyApp.ace2.Count==13 && MyApp.ace3.Count==13 && MyApp.ace4.Count==13)
                 {
                     MessageBox.Show("ПОБЕДА");
                 }
             }
         }
-        private (ObservableCollection<Card>, Canvas) Position(MyCardButton button)
-        {
-            (ObservableCollection<Card>, Canvas) pos = new(null, null);
-            for(int i=0;i<Myapp.aces.Count;++i)
-            {
-                if (Myapp.aces[i].Contains(button.Card))
-                {
-                    pos.Item1 = Myapp.aces[i];
-                    pos.Item2 = allAces.Children.OfType<Canvas>().ToList()[i+1];
-                    break;
-                }
-            }
-            if (currentCardDeck.Children.Contains(button))
-            {
-                pos.Item1=Myapp.deck;
-                pos.Item2=currentCardDeck;
-            }
-            for (int i = 0; i<Myapp.tableDecks.Count; ++i)
-            {
-                if (Myapp.tableDecks[i].Contains(button.Card))
-                {
-                    pos.Item1 = Myapp.tableDecks[i];
-                    pos.Item2 = allTableDecks.Children.OfType<Canvas>().ToList()[i];
-                    break;
-                }
-            }
-            return pos;
-        }
         private void OpenCard(UIElementCollection collection)
         {
-            if(collection.Count>1)
+            if (collection.Count>1)
             {
                 IEnumerable<MyCardButton> myCardButtons = collection.OfType<MyCardButton>();
                 MyCardButton last = myCardButtons.Last();
@@ -224,31 +127,33 @@ namespace wpfCosinka
                 last.Content = GetImageCard.GetImage(last.Card);
             }
         }
-        private bool TryToAce(MyCardButton myCard, (ObservableCollection<Card>, Canvas) pos)
+        public (ObservableCollection<Card>, Canvas) Position(MyCardButton button)
         {
-            bool isAcing = false;
-            if(pos.Item1.IndexOf(myCard.Card)==pos.Item1.Count-1 || pos.Item1==Myapp.deck)
+            (ObservableCollection<Card>, Canvas) pos = new(null, null);
+            for (int i = 0; i<MyApp.aces.Count; ++i)
             {
-                for (int i = 0; i<4; ++i)
+                if (MyApp.aces[i].Contains(button.Card))
                 {
-                    if (Myapp.aces[i].Count>0)
-                    {
-                        if (CardHelp.IsAceCompatable(myCard.Card, Myapp.aces[i].Last()))
-                        {
-                            isAcing = true;
-                            Canvas.SetTop(myCard, 0);
-                            pos.Item2.Children.Remove(myCard);
-                            pos.Item1.Remove(myCard.Card);
-                            Myapp.aces[i].Add(myCard.Card);
-                            Canvas canvas = allAces.Children.OfType<Canvas>().ToList()[i+1];
-                            canvas.Children.Add(myCard);
-                            OpenCard(pos.Item2.Children);
-                            break;
-                        }
-                    }
+                    pos.Item1 = MyApp.aces[i];
+                    pos.Item2 = allAces.Children.OfType<Canvas>().ToList()[i+1];
+                    break;
                 }
             }
-            return isAcing;
+            if (currentCardDeck.Children.Contains(button))
+            {
+                pos.Item1=MyApp.deck;
+                pos.Item2=currentCardDeck;
+            }
+            for (int i = 0; i<MyApp.tableDecks.Count; ++i)
+            {
+                if (MyApp.tableDecks[i].Contains(button.Card))
+                {
+                    pos.Item1 = MyApp.tableDecks[i];
+                    pos.Item2 = allTableDecks.Children.OfType<Canvas>().ToList()[i];
+                    break;
+                }
+            }
+            return pos;
         }
     }
 }
