@@ -26,6 +26,7 @@ namespace wpfCosinka
         public IGetImageOfCard GetImageCard { get; set; }
         public IGetNextCard NextCard { get; set; }
         public IGetNewPostition GetNewPostition { get; set; }
+        public IGenerateDecksInterface GenerateDecksInterface { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -44,14 +45,14 @@ namespace wpfCosinka
             GetNewPostition = serviceProvider.GetRequiredService<IGetNewPostition>();
             NextCard =serviceProvider.GetRequiredService<IGetNextCard>();
             GetImageCard=serviceProvider.GetRequiredService<IGetImageOfCard>();
-            IGenerateDecksInterface generateDecksInterface = serviceProvider.GetRequiredService<IGenerateDecksInterface>();
-            generateDecksInterface.GenerateInterface(this);
+            GenerateDecksInterface = serviceProvider.GetRequiredService<IGenerateDecksInterface>();
+            GenerateDecksInterface.GenerateInterface(this);
             ISetHandlerClick setHandler = serviceProvider.GetRequiredService<ISetHandlerClick>();
             foreach (Canvas deck in allTableDecks.Children)
             {
                 setHandler.SetHandler(deck.Children.OfType<Button>());
             }
-            ListBox.ItemsSource=Directory.GetFiles(Directory.GetCurrentDirectory()+"/Saves/");
+            ListBox.ItemsSource=new DirectoryInfo(Directory.GetCurrentDirectory()+"/Saves/").GetFiles().Select(x=>x.Name);
         }
 
         private void cardDeck_Click(object sender, RoutedEventArgs e)
@@ -157,14 +158,44 @@ namespace wpfCosinka
 
         private void Button_Save_Click(object sender, RoutedEventArgs e)
         {
-            XmlSerializer xmlSerializer = new(typeof(ApplicationViewModel));
-            xmlSerializer.Serialize(new FileStream($"{Directory.GetCurrentDirectory()}/Saves/{DateTime.Now}.xml", FileMode.Create),MyApp);
+            SaveClass saveClass = new();
+            saveClass.aces=MyApp.aces;
+            saveClass.tableDecks=MyApp.tableDecks;
+            saveClass.deck=MyApp.deck;
+            XmlSerializer xmlSerializer = new(typeof(SaveClass));
+            xmlSerializer.Serialize(new FileStream($"{Directory.GetCurrentDirectory()}/Saves/{DateTime.Now.DayOfYear}{DateTime.Now.Hour}{DateTime.Now.Second}.xml", FileMode.Create),saveClass);
         }
 
         private void Button_Load_Click(object sender, RoutedEventArgs e)
         {
-
+            XmlSerializer xmlSerializer = new(typeof(SaveClass));
+            SaveClass saveClass = xmlSerializer.Deserialize(new FileStream($"{Directory.GetCurrentDirectory()}/Saves/{ListBox.SelectedItem}",FileMode.Open)) as SaveClass;
+            MyApp.deck=saveClass.deck;
+            MyApp.aces=saveClass.aces;
+            MyApp.tableDecks=saveClass.tableDecks;
+            MyApp.ace1=MyApp.aces[0];
+            MyApp.ace2=MyApp.aces[1];
+            MyApp.ace3=MyApp.aces[2];
+            MyApp.ace4=MyApp.aces[3];
+            MyApp.tableDeck1=MyApp.tableDecks[0];
+            MyApp.tableDeck2=MyApp.tableDecks[1];
+            MyApp.tableDeck3=MyApp.tableDecks[2];
+            MyApp.tableDeck4=MyApp.tableDecks[3];
+            MyApp.tableDeck5=MyApp.tableDecks[4];
+            MyApp.tableDeck6=MyApp.tableDecks[5];
+            MyApp.tableDeck7=MyApp.tableDecks[6];
+           
+                //<Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
+            foreach (var obj in allAces.Children.OfType<Canvas>())
+            {
+                
+            }
+            foreach (var obj in allTableDecks.Children.OfType<Canvas>())
+            {
+               
+            }
+            currentCardDeck.Children.Clear();
+            GenerateDecksInterface.GenerateInterface(this);
         }
     }
 }
-//<Button x:Name="cardDeck" Grid.Column="0" Grid.Row="0" Height="100" Width="67" Content="{StaticResource cardTop}" Click="cardDeck_Click"/>

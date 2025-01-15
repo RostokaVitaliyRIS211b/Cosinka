@@ -34,6 +34,10 @@ namespace wpfCosinka
     {
         public CardRank Rank { get; init; }
         public CardSuit Suit { get; init; }
+        public Card()
+        {
+
+        }
         public Card(CardRank cardRank, CardSuit cardSuit)
         {
             Rank = cardRank;
