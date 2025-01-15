@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
 
 
 namespace wpfCosinka
@@ -24,6 +25,7 @@ namespace wpfCosinka
         public ObservableCollection<Card> ace2=new();
         public ObservableCollection<Card> ace3=new();
         public ObservableCollection<Card> ace4=new();
+        [XmlArray]
         public List<ObservableCollection<Card>> aces = new();
         public ObservableCollection<Card> tableDeck1;
         public ObservableCollection<Card> tableDeck2;
@@ -32,8 +34,8 @@ namespace wpfCosinka
         public ObservableCollection<Card> tableDeck5;
         public ObservableCollection<Card> tableDeck6;
         public ObservableCollection<Card> tableDeck7;
+        [XmlArray]
         public List<ObservableCollection<Card>> tableDecks = new();
-        public Card? SelectedCard = null;
         public string path;
         public BitmapImage CardsMapImage;
         public ImageSource ImageBackCard { get; set; }

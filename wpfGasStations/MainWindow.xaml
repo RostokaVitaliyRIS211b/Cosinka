@@ -66,6 +66,11 @@
                 <Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             </Canvas>
         </Canvas>
+        <Canvas Grid.Row="1" Grid.Column="0" >
+            <Button Canvas.Bottom="200" Canvas.Left="20" Width="75" Height="35" Content="Save" Click="Button_Save_Click"/>
+            <Button Canvas.Bottom="150" Canvas.Left="20" Width="75" Height="35" Content="Load" Click="Button_Load_Click"/>
+            <ComboBox Canvas.Bottom="100" Canvas.Left="20" Width="75" Height="35" x:Name="ListBox" />
+        </Canvas>
     </Grid>
     
 </Window>

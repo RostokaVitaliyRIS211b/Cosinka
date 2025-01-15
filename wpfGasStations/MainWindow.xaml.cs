@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 
 namespace wpfCosinka
 {
@@ -46,13 +47,11 @@ namespace wpfCosinka
             IGenerateDecksInterface generateDecksInterface = serviceProvider.GetRequiredService<IGenerateDecksInterface>();
             generateDecksInterface.GenerateInterface(this);
             ISetHandlerClick setHandler = serviceProvider.GetRequiredService<ISetHandlerClick>();
-            setHandler.SetHandler(currenttable1Deck.Children.OfType<Button>());
-            setHandler.SetHandler(currenttable2Deck.Children.OfType<Button>());
-            setHandler.SetHandler(currenttable3Deck.Children.OfType<Button>());
-            setHandler.SetHandler(currenttable4Deck.Children.OfType<Button>());
-            setHandler.SetHandler(currenttable5Deck.Children.OfType<Button>());
-            setHandler.SetHandler(currenttable6Deck.Children.OfType<Button>());
-            setHandler.SetHandler(currenttable7Deck.Children.OfType<Button>());
+            foreach (Canvas deck in allTableDecks.Children)
+            {
+                setHandler.SetHandler(deck.Children.OfType<Button>());
+            }
+            ListBox.ItemsSource=Directory.GetFiles(Directory.GetCurrentDirectory()+"/Saves/");
         }
 
         private void cardDeck_Click(object sender, RoutedEventArgs e)
@@ -154,6 +153,17 @@ namespace wpfCosinka
                 }
             }
             return pos;
+        }
+
+        private void Button_Save_Click(object sender, RoutedEventArgs e)
+        {
+            XmlSerializer xmlSerializer = new(typeof(ApplicationViewModel));
+            xmlSerializer.Serialize(new FileStream($"{Directory.GetCurrentDirectory()}/Saves/{DateTime.Now}.xml", FileMode.Create),MyApp);
+        }
+
+        private void Button_Load_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
