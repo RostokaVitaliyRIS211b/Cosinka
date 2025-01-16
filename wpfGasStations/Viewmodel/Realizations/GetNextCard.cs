@@ -12,18 +12,18 @@ namespace Cosinka.Viewmodel.Realizations
     public class GetNextCard : IGetNextCard
     {
         protected int i = 0;
-        protected ObservableCollection<Card> cards;
+        ApplicationViewModel model;
         public GetNextCard(ApplicationViewModel model)
         {
-            cards = model.deck;
+            this.model = model;
         }
         Card? IGetNextCard.GetNextCard()
         {
-            if (cards.Count>0)
-                i=(i+1)%cards.Count;
+            if (model.deck.Count>0)
+                i=(i+1)%model.deck.Count;
             else
                 return null;
-            return cards[i];
+            return model.deck[i];
         }
     }
 }

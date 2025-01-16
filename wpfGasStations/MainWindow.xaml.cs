@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Serialization;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace wpfCosinka
 {
@@ -27,6 +28,7 @@ namespace wpfCosinka
         public IGetNextCard NextCard { get; set; }
         public IGetNewPostition GetNewPostition { get; set; }
         public IGenerateDecksInterface GenerateDecksInterface { get; set; }
+        public ISetHandlerClick MySetHandler { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -47,10 +49,10 @@ namespace wpfCosinka
             GetImageCard=serviceProvider.GetRequiredService<IGetImageOfCard>();
             GenerateDecksInterface = serviceProvider.GetRequiredService<IGenerateDecksInterface>();
             GenerateDecksInterface.GenerateInterface(this);
-            ISetHandlerClick setHandler = serviceProvider.GetRequiredService<ISetHandlerClick>();
+            MySetHandler = serviceProvider.GetRequiredService<ISetHandlerClick>();
             foreach (Canvas deck in allTableDecks.Children)
             {
-                setHandler.SetHandler(deck.Children.OfType<Button>());
+                MySetHandler.SetHandler(deck.Children.OfType<Button>());
             }
             ListBox.ItemsSource=new DirectoryInfo(Directory.GetCurrentDirectory()+"/Saves/").GetFiles().Select(x=>x.Name);
         }
@@ -164,6 +166,7 @@ namespace wpfCosinka
             saveClass.deck=MyApp.deck;
             XmlSerializer xmlSerializer = new(typeof(SaveClass));
             xmlSerializer.Serialize(new FileStream($"{Directory.GetCurrentDirectory()}/Saves/{DateTime.Now.DayOfYear}{DateTime.Now.Hour}{DateTime.Now.Second}.xml", FileMode.Create),saveClass);
+            ListBox.ItemsSource=new DirectoryInfo(Directory.GetCurrentDirectory()+"/Saves/").GetFiles().Select(x => x.Name);
         }
 
         private void Button_Load_Click(object sender, RoutedEventArgs e)
@@ -184,18 +187,39 @@ namespace wpfCosinka
             MyApp.tableDeck5=MyApp.tableDecks[4];
             MyApp.tableDeck6=MyApp.tableDecks[5];
             MyApp.tableDeck7=MyApp.tableDecks[6];
-           
+            
                 //<Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             foreach (var obj in allAces.Children.OfType<Canvas>())
             {
-                
+                while (obj.Children.Count>1)
+                    obj.Children.RemoveAt(1);
             }
             foreach (var obj in allTableDecks.Children.OfType<Canvas>())
             {
-               
+                while (obj.Children.Count>1)
+                    obj.Children.RemoveAt(1);
             }
             currentCardDeck.Children.Clear();
             GenerateDecksInterface.GenerateInterface(this);
+            int i = 1;
+            foreach (Canvas deck in allTableDecks.Children)
+            {
+                MySetHandler.SetHandler(deck.Children.OfType<Button>());
+            }
+            List<Canvas> allCabvasAces = new(allAces.Children.OfType<Canvas>());
+            foreach (IList<Card> cards in MyApp.aces)
+            {
+                if (cards.Count!=0)
+                {
+                    MyCardButton myCardButton = new(cards.Last(), true);
+                    ButtonTemplates.GetStyle1Button(myCardButton);
+                    myCardButton.Content=GetImageCard.GetImage(cards.Last());
+                    Canvas canvas = allCabvasAces[i];
+                    Canvas.SetTop(myCardButton, 0);
+                    canvas?.Children.Add(myCardButton);
+                }
+                ++i;
+            }
         }
     }
 }
