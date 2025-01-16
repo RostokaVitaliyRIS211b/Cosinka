@@ -29,6 +29,7 @@ namespace wpfCosinka
         public IGetNewPostition GetNewPostition { get; set; }
         public IGenerateDecksInterface GenerateDecksInterface { get; set; }
         public ISetHandlerClick MySetHandler { get; set; }
+        public ISave MySave { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -40,10 +41,12 @@ namespace wpfCosinka
             serviceCollection.AddSingleton<IGenerateDecksInterface, GenerateDecksInteface>();
             serviceCollection.AddSingleton<MainWindow>(this);
             serviceCollection.AddSingleton<IGetNewPostition, GetNewPositionRealization>();
+            serviceCollection.AddSingleton<ISave, Save>();
             serviceCollection.AddScoped<ISetHandlerClick, SetHandler>();
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
             MyApp=serviceProvider.GetRequiredService<ApplicationViewModel>();
             DataContext=MyApp;
+            MySave = serviceProvider.GetRequiredService<ISave>();
             GetNewPostition = serviceProvider.GetRequiredService<IGetNewPostition>();
             NextCard =serviceProvider.GetRequiredService<IGetNextCard>();
             GetImageCard=serviceProvider.GetRequiredService<IGetImageOfCard>();
@@ -54,13 +57,13 @@ namespace wpfCosinka
             {
                 MySetHandler.SetHandler(deck.Children.OfType<Button>());
             }
-            ListBox.ItemsSource=new DirectoryInfo(Directory.GetCurrentDirectory()+"/Saves/").GetFiles().Select(x=>x.Name);
+            ListBox.ItemsSource=new DirectoryInfo(Directory.GetCurrentDirectory()+"/Saves/").GetFiles().Select(x => x.Name);
         }
 
         private void cardDeck_Click(object sender, RoutedEventArgs e)
         {
             Card card = NextCard.GetNextCard();
-            if(card!=null)
+            if (card!=null)
             {
                 MyCardButton button = new(card, true);
                 ButtonTemplates.GetStyle1Button(button);
@@ -79,9 +82,9 @@ namespace wpfCosinka
             {
                 (ObservableCollection<Card>, Canvas) myPosition = Position(button);
                 (ObservableCollection<Card>?, Canvas?) newPosition = GetNewPostition.GetNewPosition(button);
-                if(newPosition.Item1 is not null)
+                if (newPosition.Item1 is not null)
                 {
-                    if(allAces.Children.Contains(newPosition.Item2))
+                    if (allAces.Children.Contains(newPosition.Item2))
                     {
                         myPosition.Item2.Children.Remove(button);
                         myPosition.Item1.Remove(button.Card);
@@ -160,19 +163,14 @@ namespace wpfCosinka
 
         private void Button_Save_Click(object sender, RoutedEventArgs e)
         {
-            SaveClass saveClass = new();
-            saveClass.aces=MyApp.aces;
-            saveClass.tableDecks=MyApp.tableDecks;
-            saveClass.deck=MyApp.deck;
-            XmlSerializer xmlSerializer = new(typeof(SaveClass));
-            xmlSerializer.Serialize(new FileStream($"{Directory.GetCurrentDirectory()}/Saves/{DateTime.Now.DayOfYear}{DateTime.Now.Hour}{DateTime.Now.Second}.xml", FileMode.Create),saveClass);
+            MySave.Save(MyApp);
             ListBox.ItemsSource=new DirectoryInfo(Directory.GetCurrentDirectory()+"/Saves/").GetFiles().Select(x => x.Name);
         }
 
         private void Button_Load_Click(object sender, RoutedEventArgs e)
         {
             XmlSerializer xmlSerializer = new(typeof(SaveClass));
-            SaveClass saveClass = xmlSerializer.Deserialize(new FileStream($"{Directory.GetCurrentDirectory()}/Saves/{ListBox.SelectedItem}",FileMode.Open)) as SaveClass;
+            SaveClass saveClass = xmlSerializer.Deserialize(new FileStream($"{Directory.GetCurrentDirectory()}/Saves/{ListBox.SelectedItem}", FileMode.Open)) as SaveClass;
             MyApp.deck=saveClass.deck;
             MyApp.aces=saveClass.aces;
             MyApp.tableDecks=saveClass.tableDecks;
@@ -187,8 +185,8 @@ namespace wpfCosinka
             MyApp.tableDeck5=MyApp.tableDecks[4];
             MyApp.tableDeck6=MyApp.tableDecks[5];
             MyApp.tableDeck7=MyApp.tableDecks[6];
-            
-                //<Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
+
+            //<Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
             foreach (var obj in allAces.Children.OfType<Canvas>())
             {
                 while (obj.Children.Count>1)
