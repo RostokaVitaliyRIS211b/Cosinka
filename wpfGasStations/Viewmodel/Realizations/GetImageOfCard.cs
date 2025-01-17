@@ -1,6 +1,7 @@
 ﻿using Cosinka.Viewmodel.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,16 +14,17 @@ namespace Cosinka.Viewmodel.Realizations
 {
     public class GetImageOfCard : IGetImageOfCard
     {
-        ApplicationViewModel app;
-        public GetImageOfCard(ApplicationViewModel app)
+        public BitmapImage CardsMapImage;
+        public GetImageOfCard()
         {
-            this.app=app;
+            Uri uri2 = new Uri(Directory.GetCurrentDirectory()+"\\resources\\521.png", UriKind.Absolute);
+            CardsMapImage = new(uri2);
         }
         public Image GetImage(Card card)
         {
             Int32Rect int32Rect = new(12+122*((int)card.Rank-1), 12+180*(int)card.Suit, 108, 162);
             Image image = new();
-            image.Source = new CroppedBitmap(app.CardsMapImage, int32Rect);
+            image.Source = new CroppedBitmap(CardsMapImage, int32Rect);
             return image;
         }
     }

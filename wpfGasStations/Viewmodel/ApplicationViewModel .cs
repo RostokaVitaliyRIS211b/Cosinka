@@ -37,7 +37,6 @@ namespace wpfCosinka
         [XmlArray]
         public List<ObservableCollection<Card>> tableDecks = new();
         public string path;
-        public BitmapImage CardsMapImage;
         public ImageSource ImageBackCard { get; set; }
         public ImageSource ImageBackGround { get; set; }
         public ApplicationViewModel(IViewModelBuilder viewModelBuilder)
@@ -55,8 +54,7 @@ namespace wpfCosinka
             tableDeck5=observableCollections.First(x => x.Count==5);
             tableDeck6=observableCollections.First(x => x.Count==6);
             tableDeck7=observableCollections.First(x => x.Count==7);
-            Uri uri2 = new Uri(path+"\\resources\\521.png", UriKind.Absolute);
-            CardsMapImage = new(uri2);
+
             aces.Add(ace1);
             aces.Add(ace2);
             aces.Add(ace3);
