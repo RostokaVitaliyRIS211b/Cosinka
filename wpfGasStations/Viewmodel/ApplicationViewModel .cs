@@ -21,13 +21,13 @@ namespace wpfCosinka
     public class ApplicationViewModel:INotifyPropertyChanged
     {
         public ObservableCollection<Card> deck;
-        public ObservableCollection<Card> ace1=new();
+        public ObservableCollection<Card> ace1 = new();
         public ObservableCollection<Card> ace2=new();
         public ObservableCollection<Card> ace3=new();
         public ObservableCollection<Card> ace4=new();
         [XmlArray]
         public List<ObservableCollection<Card>> aces = new();
-        public ObservableCollection<Card> tableDeck1;
+        public ObservableCollection<Card> tableDeck1 ;
         public ObservableCollection<Card> tableDeck2;
         public ObservableCollection<Card> tableDeck3;
         public ObservableCollection<Card> tableDeck4;

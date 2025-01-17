@@ -30,6 +30,7 @@ namespace wpfCosinka
         public IGenerateDecksInterface GenerateDecksInterface { get; set; }
         public ISetHandlerClick MySetHandler { get; set; }
         public ISave MySave { get; set; }
+        public ILoad MyLoad { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -41,11 +42,13 @@ namespace wpfCosinka
             serviceCollection.AddSingleton<IGenerateDecksInterface, GenerateDecksInteface>();
             serviceCollection.AddSingleton<MainWindow>(this);
             serviceCollection.AddSingleton<IGetNewPostition, GetNewPositionRealization>();
-            serviceCollection.AddSingleton<ISave, Save>();
+            serviceCollection.AddSingleton<ISave, SaveA>();
+            serviceCollection.AddSingleton<ILoad, Load>();
             serviceCollection.AddScoped<ISetHandlerClick, SetHandler>();
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
             MyApp=serviceProvider.GetRequiredService<ApplicationViewModel>();
             DataContext=MyApp;
+            MyLoad=serviceProvider.GetRequiredService<ILoad>();
             MySave = serviceProvider.GetRequiredService<ISave>();
             GetNewPostition = serviceProvider.GetRequiredService<IGetNewPostition>();
             NextCard =serviceProvider.GetRequiredService<IGetNextCard>();
@@ -169,55 +172,7 @@ namespace wpfCosinka
 
         private void Button_Load_Click(object sender, RoutedEventArgs e)
         {
-            XmlSerializer xmlSerializer = new(typeof(SaveClass));
-            SaveClass saveClass = xmlSerializer.Deserialize(new FileStream($"{Directory.GetCurrentDirectory()}/Saves/{ListBox.SelectedItem}", FileMode.Open)) as SaveClass;
-            MyApp.deck=saveClass.deck;
-            MyApp.aces=saveClass.aces;
-            MyApp.tableDecks=saveClass.tableDecks;
-            MyApp.ace1=MyApp.aces[0];
-            MyApp.ace2=MyApp.aces[1];
-            MyApp.ace3=MyApp.aces[2];
-            MyApp.ace4=MyApp.aces[3];
-            MyApp.tableDeck1=MyApp.tableDecks[0];
-            MyApp.tableDeck2=MyApp.tableDecks[1];
-            MyApp.tableDeck3=MyApp.tableDecks[2];
-            MyApp.tableDeck4=MyApp.tableDecks[3];
-            MyApp.tableDeck5=MyApp.tableDecks[4];
-            MyApp.tableDeck6=MyApp.tableDecks[5];
-            MyApp.tableDeck7=MyApp.tableDecks[6];
-
-            //<Rectangle Width="67" Height="100" StrokeThickness="5" Stroke="Black"/>
-            foreach (var obj in allAces.Children.OfType<Canvas>())
-            {
-                while (obj.Children.Count>1)
-                    obj.Children.RemoveAt(1);
-            }
-            foreach (var obj in allTableDecks.Children.OfType<Canvas>())
-            {
-                while (obj.Children.Count>1)
-                    obj.Children.RemoveAt(1);
-            }
-            currentCardDeck.Children.Clear();
-            GenerateDecksInterface.GenerateInterface(this);
-            int i = 1;
-            foreach (Canvas deck in allTableDecks.Children)
-            {
-                MySetHandler.SetHandler(deck.Children.OfType<Button>());
-            }
-            List<Canvas> allCabvasAces = new(allAces.Children.OfType<Canvas>());
-            foreach (IList<Card> cards in MyApp.aces)
-            {
-                if (cards.Count!=0)
-                {
-                    MyCardButton myCardButton = new(cards.Last(), true);
-                    ButtonTemplates.GetStyle1Button(myCardButton);
-                    myCardButton.Content=GetImageCard.GetImage(cards.Last());
-                    Canvas canvas = allCabvasAces[i];
-                    Canvas.SetTop(myCardButton, 0);
-                    canvas?.Children.Add(myCardButton);
-                }
-                ++i;
-            }
+            MyLoad.Load(this, MyApp);
         }
     }
 }

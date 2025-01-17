@@ -12,11 +12,11 @@ namespace Cosinka.Model
     public record class SaveClass
     {
         [XmlArray]
-        public ObservableCollection<Card> deck { get; set; }
+        public List<SaveCard> deck { get; set; }
         [XmlArray]
-        public List<ObservableCollection<Card>> aces { get; set; }
+        public List<List<SaveCard>> aces { get; set; }
         [XmlArray]
-        public List<ObservableCollection<Card>> tableDecks { get; set; }
+        public List<List<SaveCard>> tableDecks { get; set; }
         public SaveClass()
         {
 
