@@ -29,6 +29,7 @@ namespace Cosinka.Viewmodel.Realizations
             MyApp.deck=new(saveClass.deck.Select(x => x.SavedCard));
             List<IEnumerable<Card>> cards = new(saveClass.aces.Select(x => x.Select(x => x.SavedCard)));
             MyApp.aces=new();
+            cards.RemoveAt(0);
             foreach (var obj in cards)
             {
                 ObservableCollection<Card> cards1 = new(obj);
@@ -63,7 +64,7 @@ namespace Cosinka.Viewmodel.Realizations
                     canvas.Children.RemoveAt(1);
             }
             window.currentCardDeck.Children.Clear();
-            for (int i = 0; i<4; ++i)
+            for (int i = 0; i<5; ++i)
             {
                 Canvas canvas = window.allAces.Children.OfType<Canvas>().ToList()[i];
                 if (saveClass.aces[i].Count>0)
