@@ -117,7 +117,8 @@ namespace wpfCosinka
                         }
                     }
                     OpenCard(myPosition.Item2.Children);
-
+                    if(myPosition.Item1==MyApp.deck)
+                        cardDeck_Click(new object(), new RoutedEventArgs());
                 }
                 if (MyApp.ace1.Count==13 && MyApp.ace2.Count==13 && MyApp.ace3.Count==13 && MyApp.ace4.Count==13)
                 {
